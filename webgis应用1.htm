@@ -1,0 +1,130 @@
+﻿<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
+    <title>webgis应用</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.19/esri/themes/light/main.css" />
+
+    <style>
+      html,
+      body{
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+      #titleDiv {
+        padding: 0;
+        margin: 0;
+        height: 5%;
+        width: 100%;
+        text-align:center;
+        font-weight:bold;
+        background-color:#DA70D6;
+      }
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 95%;
+        width: 80%;
+        float:left;
+        
+      }
+      #baseDiv {
+        padding: 0;
+        margin: 0;
+        height: 95%;
+        width: 20%;
+        text-align:center;
+        font-weight:bold;
+        float:left;
+      }
+    </style>
+
+    <script src="https://js.arcgis.com/4.19/"></script>
+    <script>
+        require(["esri/views/MapView", "esri/widgets/BasemapGallery", "esri/widgets/LayerList", "esri/widgets/Legend", "esri/WebMap", "esri/widgets/Search", "esri/widgets/ScaleBar"], function (MapView, BasemapGallery, LayerList, Legend, WebMap, Search, ScaleBar) {
+            var webmap = new WebMap({
+                portalItem: {
+                    // autocasts as new PortalItem()
+                    id: "05e015c5f0314db9a487a9b46cb37eca"
+                }
+            });
+
+            var view = new MapView({
+                container: "viewDiv",
+                map: webmap
+            });
+            //添加地图库
+
+            var basemapGallery = new BasemapGallery({
+                container: "baseDiv",
+                map: webmap,
+                view: view
+            });
+
+            //添加图层与图例
+            view.when(function () {
+                // get the first layer in the collection of operational layers in the WebMap
+                // when the resources in the MapView have loaded.
+                var featureLayer = webmap.layers.getItemAt(0);
+
+                var legend = new Legend({
+                    view: view,
+                    layerInfos: [
+              {
+                  layer: featureLayer,
+                  title: "图例"
+              }
+            ]
+                });
+
+                // Add widget to the bottom right corner of the view
+                view.ui.add(legend, "bottom-left");
+            });
+
+
+            //添加搜索框
+
+            var searchWidget = new Search({
+                view: view
+            });
+
+            // Add the search widget to the top right corner of the view
+            view.ui.add(searchWidget, {
+                position: "top-right"
+            });
+
+            //添加比例尺
+            var scaleBar = new ScaleBar({
+                view: view,
+                unit: "dual" // The scale bar displays both metric and non-metric units.
+            });
+
+            // Add the widget to the bottom left corner of the view
+            view.ui.add(scaleBar, {
+                position: "bottom-right"
+            });
+
+            //添加LayerList
+            view.when(function () {
+                var layerList = new LayerList({
+                    view: view
+                });
+
+                // Add widget to the top right corner of the view
+                view.ui.add(layerList, "top-right");
+            });
+
+
+
+        });
+    </script>
+  </head>
+
+  <body class="calcite">
+    <div id="titleDiv">关于显示纽约教育的webgis应用</div>
+    <div id="viewDiv"></div>
+    <div id="baseDiv">这是底图库</div>
+  </body>
+</html>
